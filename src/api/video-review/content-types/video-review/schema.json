@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "video_reviews",
+  "info": {
+    "singularName": "video-review",
+    "pluralName": "video-reviews",
+    "displayName": "video-review"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "trip": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::trip.trip"
+    },
+    "reviewer_name": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "video": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["videos"]
+    },
+    "thumbnail": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "title": {
+      "type": "string"
+    },
+    "display_order": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

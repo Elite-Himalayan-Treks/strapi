@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_shared_buttons",
+  "info": {
+    "displayName": "button"
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "style": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

@@ -1,0 +1,46 @@
+{
+  "kind": "collectionType",
+  "collectionName": "fixed_departures",
+  "info": {
+    "singularName": "fixed-departure",
+    "pluralName": "fixed-departures",
+    "displayName": "fixed_departure"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "trip": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::trip.trip",
+      "inversedBy": "departures"
+    },
+    "start_date": {
+      "type": "date",
+      "required": true
+    },
+    "end_date": {
+      "type": "date"
+    },
+    "price": {
+      "type": "decimal"
+    },
+    "discount": {
+      "type": "decimal"
+    },
+    "total_seats": {
+      "type": "integer"
+    },
+    "booked_seats": {
+      "type": "integer",
+      "default": 0
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["open", "limited", "guaranteed", "full", "cancelled"],
+      "default": "open"
+    }
+  }
+}

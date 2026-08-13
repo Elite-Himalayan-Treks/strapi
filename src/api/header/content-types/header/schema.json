@@ -1,0 +1,47 @@
+{
+  "kind": "singleType",
+  "collectionName": "headers",
+  "info": {
+    "singularName": "header",
+    "pluralName": "headers",
+    "displayName": "header"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "top_bar": {
+      "type": "component",
+      "component": "shared.top-bar",
+      "repeatable": false
+    },
+    "navigation": {
+      "type": "component",
+      "component": "shared.navigation",
+      "repeatable": true
+    },
+    "plan_trip_button": {
+      "type": "component",
+      "component": "shared.button",
+      "repeatable": false
+    },
+    "show_search": {
+      "type": "boolean",
+      "default": true
+    },
+    "show_cart": {
+      "type": "boolean",
+      "default": false
+    },
+    "show_wishlist": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

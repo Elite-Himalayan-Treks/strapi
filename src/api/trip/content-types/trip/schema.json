@@ -1,0 +1,148 @@
+{
+  "kind": "collectionType",
+  "collectionName": "trips",
+  "info": {
+    "singularName": "trip",
+    "pluralName": "trips",
+    "displayName": "trip"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "trip_code": {
+      "type": "string"
+    },
+    "destination": {
+      "type": "string"
+    },
+    "region": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::region.region",
+      "inversedBy": "trips"
+    },
+    "activity": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::activity.activity",
+      "inversedBy": "trips"
+    },
+    "overview": {
+      "type": "text"
+    },
+    "short_description": {
+      "type": "text"
+    },
+    "duration_days": {
+      "type": "integer"
+    },
+    "duration_night": {
+      "type": "integer"
+    },
+    "difficulty": {
+      "type": "enumeration",
+      "enum": ["easy", "moderate", "strenuous", "challenging", "extreme"]
+    },
+    "max_altitude": {
+      "type": "string"
+    },
+    "start_point": {
+      "type": "string"
+    },
+    "end_point": {
+      "type": "string"
+    },
+    "group_size_min": {
+      "type": "integer"
+    },
+    "group_size_max": {
+      "type": "integer"
+    },
+    "best_season": {
+      "type": "string"
+    },
+    "price": {
+      "type": "decimal"
+    },
+    "discount_price": {
+      "type": "decimal"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
+    },
+    "route_map": {
+      "type": "string"
+    },
+    "pdf_brochure": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": ["images", "files"]
+    },
+    "view_count": {
+      "type": "integer",
+      "default": 0
+    },
+    "gallery": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "highlights": {
+      "type": "text"
+    },
+    "itinerary": {
+      "type": "text"
+    },
+    "cost_include": {
+      "type": "text"
+    },
+    "cost_exclude": {
+      "type": "text"
+    },
+    "permits": {
+      "type": "text"
+    },
+    "equipment": {
+      "type": "text"
+    },
+    "faqs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::faq.faq",
+      "mappedBy": "trip"
+    },
+    "reviews": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::review.review",
+      "mappedBy": "trip"
+    },
+    "departures": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::fixed-departure.fixed-departure",
+      "mappedBy": "trip"
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false
+    }
+  }
+}

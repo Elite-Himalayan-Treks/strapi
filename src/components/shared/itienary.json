@@ -1,0 +1,34 @@
+{
+  "collectionName": "components_shared_itienaries",
+  "info": {
+    "displayName": "itinerary"
+  },
+  "options": {},
+  "attributes": {
+    "day": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "altitude": {
+      "type": "string"
+    },
+    "walking_hours": {
+      "type": "string"
+    },
+    "distance": {
+      "type": "string"
+    },
+    "meals": {
+      "type": "string"
+    },
+    "accommodation": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

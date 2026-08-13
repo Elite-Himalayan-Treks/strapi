@@ -1,0 +1,56 @@
+{
+  "kind": "collectionType",
+  "collectionName": "inquiries",
+  "info": {
+    "singularName": "inquiry",
+    "pluralName": "inquiries",
+    "displayName": "inquiry"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "trip": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::trip.trip"
+    },
+    "trip_label": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "default": "website"
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
+      "type": "email",
+      "required": true
+    },
+    "phone": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "message": {
+      "type": "text",
+      "required": true
+    },
+    "preferred_date": {
+      "type": "date"
+    },
+    "group_size": {
+      "type": "integer"
+    },
+    "inquiry_status": {
+      "type": "enumeration",
+      "enum": ["new", "in_progress", "closed"],
+      "default": "new"
+    }
+  }
+}

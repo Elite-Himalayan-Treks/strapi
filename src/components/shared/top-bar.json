@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_shared_top_bars",
+  "info": {
+    "displayName": "top-bar"
+  },
+  "options": {},
+  "attributes": {
+    "phone": {
+      "type": "string"
+    },
+    "whatsapp": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "notice": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

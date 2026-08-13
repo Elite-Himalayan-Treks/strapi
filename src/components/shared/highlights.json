@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_shared_highlights",
+  "info": {
+    "displayName": "highlights",
+    "icon": "volumeUp"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "icon": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "description": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}

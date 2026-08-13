@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_shared_navigations",
+  "info": {
+    "displayName": "navigation"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "page": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "display_order": {
+      "type": "integer"
+    },
+    "mega_menu": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

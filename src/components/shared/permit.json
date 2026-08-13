@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_shared_permits",
+  "info": {
+    "displayName": "permit"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "cost": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

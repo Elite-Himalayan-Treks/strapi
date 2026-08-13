@@ -1,0 +1,39 @@
+{
+  "kind": "singleType",
+  "collectionName": "homepages",
+  "info": {
+    "singularName": "homepage",
+    "pluralName": "homepages",
+    "displayName": "homepage"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "hero": {
+      "type": "text"
+    },
+    "featured_trips": {
+      "type": "text"
+    },
+    "featured_regions": {
+      "type": "text"
+    },
+    "featured_activities": {
+      "type": "text"
+    },
+    "why_choose_us": {
+      "type": "text"
+    },
+    "featured_reviews": {
+      "type": "text"
+    },
+    "featured_blogs": {
+      "type": "text"
+    },
+    "cta_section": {
+      "type": "text"
+    }
+  }
+}
