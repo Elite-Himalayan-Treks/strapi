@@ -4,7 +4,7 @@
   "info": {
     "singularName": "destination",
     "pluralName": "destinations",
-    "displayName": "destination"
+    "displayName": "Destination"
   },
   "options": {
     "draftAndPublish": true
@@ -23,7 +23,9 @@
     "banner_image": {
       "type": "media",
       "multiple": true,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "is_active": {
       "type": "boolean",

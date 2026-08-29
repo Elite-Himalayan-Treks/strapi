@@ -4,7 +4,7 @@
   "info": {
     "singularName": "header",
     "pluralName": "headers",
-    "displayName": "header"
+    "displayName": "Header"
   },
   "options": {
     "draftAndPublish": true
@@ -14,7 +14,9 @@
     "logo": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "top_bar": {
       "type": "component",

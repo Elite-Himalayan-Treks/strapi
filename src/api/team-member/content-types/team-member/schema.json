@@ -4,7 +4,7 @@
   "info": {
     "singularName": "team-member",
     "pluralName": "team-members",
-    "displayName": "team-member"
+    "displayName": "Team Member"
   },
   "options": {
     "draftAndPublish": true
@@ -29,10 +29,10 @@
       "allowedTypes": ["images"]
     },
     "bio": {
-      "type": "text"
+      "type": "richtext"
     },
     "experience": {
-      "type": "text"
+      "type": "richtext"
     },
     "language": {
       "type": "string"

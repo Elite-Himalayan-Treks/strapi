@@ -4,7 +4,7 @@
   "info": {
     "singularName": "inquiry",
     "pluralName": "inquiries",
-    "displayName": "inquiry"
+    "displayName": "Inquiry"
   },
   "options": {
     "draftAndPublish": false

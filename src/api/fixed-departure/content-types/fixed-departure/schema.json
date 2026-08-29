@@ -4,7 +4,7 @@
   "info": {
     "singularName": "fixed-departure",
     "pluralName": "fixed-departures",
-    "displayName": "fixed_departure"
+    "displayName": "Fixed Departure"
   },
   "options": {
     "draftAndPublish": false
@@ -37,7 +37,7 @@
       "type": "integer",
       "default": 0
     },
-    "status": {
+    "departure_status": {
       "type": "enumeration",
       "enum": ["open", "limited", "guaranteed", "full", "cancelled"],
       "default": "open"

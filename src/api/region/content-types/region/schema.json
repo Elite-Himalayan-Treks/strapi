@@ -4,7 +4,7 @@
   "info": {
     "singularName": "region",
     "pluralName": "regions",
-    "displayName": "region"
+    "displayName": "Region"
   },
   "options": {
     "draftAndPublish": true
@@ -29,7 +29,9 @@
     "thumbnail": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "price_from": {
       "type": "decimal"

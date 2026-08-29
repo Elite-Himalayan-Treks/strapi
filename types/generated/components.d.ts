@@ -12,6 +12,25 @@ export interface SharedButton extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedCompanyDocument extends Struct.ComponentSchema {
+  collectionName: 'components_shared_company_documents';
+  info: {
+    displayName: 'Company document';
+    icon: 'file';
+  };
+  attributes: {
+    category: Schema.Attribute.Enumeration<
+      ['Registration', 'License', 'Tax', 'Insurance', 'Certificate', 'Other']
+    > &
+      Schema.Attribute.DefaultTo<'Other'>;
+    description: Schema.Attribute.Text;
+    file: Schema.Attribute.Media<'files' | 'images'> &
+      Schema.Attribute.Required;
+    issuedDate: Schema.Attribute.Date;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedContact extends Struct.ComponentSchema {
   collectionName: 'components_shared_contacts';
   info: {
@@ -102,7 +121,7 @@ export interface SharedItienary extends Struct.ComponentSchema {
     accommodation: Schema.Attribute.String;
     altitude: Schema.Attribute.String;
     day: Schema.Attribute.String;
-    description: Schema.Attribute.Text;
+    description: Schema.Attribute.RichText;
     distance: Schema.Attribute.String;
     meals: Schema.Attribute.String;
     title: Schema.Attribute.String;
@@ -241,6 +260,7 @@ declare module '@strapi/strapi' {
   export namespace Public {
     export interface ComponentSchemas {
       'shared.button': SharedButton;
+      'shared.company-document': SharedCompanyDocument;
       'shared.contact': SharedContact;
       'shared.cost-item': SharedCostItem;
       'shared.equipment': SharedEquipment;

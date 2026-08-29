@@ -4,7 +4,7 @@
   "info": {
     "singularName": "static-page",
     "pluralName": "static-pages",
-    "displayName": "static-page"
+    "displayName": "Static Page"
   },
   "options": {
     "draftAndPublish": true
@@ -23,7 +23,9 @@
     "banner": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "content": {
       "type": "richtext"

@@ -4,7 +4,7 @@
   "info": {
     "singularName": "site-setting",
     "pluralName": "site-settings",
-    "displayName": "site-setting"
+    "displayName": "Site Setting"
   },
   "options": {
     "draftAndPublish": true
@@ -24,12 +24,16 @@
     "logo": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "favicon": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "email": {
       "type": "email"

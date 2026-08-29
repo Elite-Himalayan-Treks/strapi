@@ -475,7 +475,7 @@ export interface ApiAboutAbout extends Struct.SingleTypeSchema {
 export interface ApiActivityActivity extends Struct.CollectionTypeSchema {
   collectionName: 'activities';
   info: {
-    displayName: 'activity';
+    displayName: 'Activity';
     pluralName: 'activities';
     singularName: 'activity';
   };
@@ -486,7 +486,7 @@ export interface ApiActivityActivity extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    description: Schema.Attribute.Text;
+    description: Schema.Attribute.RichText;
     display_order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     icon: Schema.Attribute.Media<'images'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -509,7 +509,7 @@ export interface ApiBlogCatagoryBlogCatagory
   extends Struct.CollectionTypeSchema {
   collectionName: 'blog_catagories';
   info: {
-    displayName: 'blog-catagory';
+    displayName: 'Blog Category';
     pluralName: 'blog-catagories';
     singularName: 'blog-catagory';
   };
@@ -539,7 +539,7 @@ export interface ApiBlogCatagoryBlogCatagory
 export interface ApiBlogBlog extends Struct.CollectionTypeSchema {
   collectionName: 'blogs';
   info: {
-    displayName: 'blog';
+    displayName: 'Blog';
     pluralName: 'blogs';
     singularName: 'blog';
   };
@@ -572,10 +572,144 @@ export interface ApiBlogBlog extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiBookingBooking extends Struct.CollectionTypeSchema {
+  collectionName: 'bookings';
+  info: {
+    description: 'Trip booking orders with 2C2P payment';
+    displayName: 'Booking';
+    pluralName: 'bookings';
+    singularName: 'booking';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    admin_notes: Schema.Attribute.Text;
+    amount_due: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    amount_paid: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    approval_code: Schema.Attribute.String;
+    booking_status: Schema.Attribute.Enumeration<
+      [
+        'pending_payment',
+        'paid',
+        'confirmed',
+        'cancelled',
+        'expired',
+        'failed',
+        'refunded',
+      ]
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'pending_payment'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    currency: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'USD'>;
+    customer_country: Schema.Attribute.String;
+    customer_email: Schema.Attribute.Email & Schema.Attribute.Required;
+    customer_name: Schema.Attribute.String & Schema.Attribute.Required;
+    customer_phone: Schema.Attribute.String;
+    departure: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::fixed-departure.fixed-departure'
+    >;
+    deposit_percent: Schema.Attribute.Decimal;
+    discount_per_person: Schema.Attribute.Decimal &
+      Schema.Attribute.DefaultTo<0>;
+    end_date: Schema.Attribute.Date;
+    frontend_return_url: Schema.Attribute.String;
+    invoice_no: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::booking.booking'
+    > &
+      Schema.Attribute.Private;
+    paid_at: Schema.Attribute.DateTime;
+    participants: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<1>;
+    payment_channel: Schema.Attribute.String;
+    payment_provider: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'2c2p'>;
+    payment_raw: Schema.Attribute.JSON;
+    payment_status: Schema.Attribute.Enumeration<
+      ['unpaid', 'pending', 'paid', 'failed', 'refunded']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'unpaid'>;
+    payment_token: Schema.Attribute.Text;
+    payment_type: Schema.Attribute.Enumeration<['full', 'deposit']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'full'>;
+    publishedAt: Schema.Attribute.DateTime;
+    reference_no: Schema.Attribute.String;
+    seats_reserved: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    source_page: Schema.Attribute.String;
+    special_requests: Schema.Attribute.Text;
+    start_date: Schema.Attribute.Date;
+    subtotal: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    total_amount: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    tran_ref: Schema.Attribute.String;
+    trip: Schema.Attribute.Relation<'manyToOne', 'api::trip.trip'>;
+    trip_title: Schema.Attribute.String;
+    unit_price: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiCompanyCompany extends Struct.SingleTypeSchema {
+  collectionName: 'companies';
+  info: {
+    description: 'About the company and official documents shown on the About Us page';
+    displayName: 'Company';
+    pluralName: 'companies';
+    singularName: 'company';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    aboutCompany: Schema.Attribute.RichText;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    documents: Schema.Attribute.Component<'shared.company-document', true>;
+    legalName: Schema.Attribute.String;
+    licenseNumber: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::company.company'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    registrationNumber: Schema.Attribute.String;
+    title: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'About the company'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiDestinationDestination extends Struct.CollectionTypeSchema {
   collectionName: 'destinations';
   info: {
-    displayName: 'destination';
+    displayName: 'Destination';
     pluralName: 'destinations';
     singularName: 'destination';
   };
@@ -609,7 +743,7 @@ export interface ApiDestinationDestination extends Struct.CollectionTypeSchema {
 export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
   collectionName: 'faqs';
   info: {
-    displayName: 'faq';
+    displayName: 'FAQ';
     pluralName: 'faqs';
     singularName: 'faq';
   };
@@ -639,7 +773,7 @@ export interface ApiFixedDepartureFixedDeparture
   extends Struct.CollectionTypeSchema {
   collectionName: 'fixed_departures';
   info: {
-    displayName: 'fixed_departure';
+    displayName: 'Fixed Departure';
     pluralName: 'fixed-departures';
     singularName: 'fixed-departure';
   };
@@ -651,6 +785,10 @@ export interface ApiFixedDepartureFixedDeparture
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    departure_status: Schema.Attribute.Enumeration<
+      ['open', 'limited', 'guaranteed', 'full', 'cancelled']
+    > &
+      Schema.Attribute.DefaultTo<'open'>;
     discount: Schema.Attribute.Decimal;
     end_date: Schema.Attribute.Date;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -662,10 +800,6 @@ export interface ApiFixedDepartureFixedDeparture
     price: Schema.Attribute.Decimal;
     publishedAt: Schema.Attribute.DateTime;
     start_date: Schema.Attribute.Date & Schema.Attribute.Required;
-    status: Schema.Attribute.Enumeration<
-      ['open', 'limited', 'guaranteed', 'full', 'cancelled']
-    > &
-      Schema.Attribute.DefaultTo<'open'>;
     total_seats: Schema.Attribute.Integer;
     trip: Schema.Attribute.Relation<'manyToOne', 'api::trip.trip'>;
     updatedAt: Schema.Attribute.DateTime;
@@ -677,7 +811,7 @@ export interface ApiFixedDepartureFixedDeparture
 export interface ApiFooterFooter extends Struct.SingleTypeSchema {
   collectionName: 'footers';
   info: {
-    displayName: 'footer';
+    displayName: 'Footer';
     pluralName: 'footers';
     singularName: 'footer';
   };
@@ -685,7 +819,7 @@ export interface ApiFooterFooter extends Struct.SingleTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    about: Schema.Attribute.Text;
+    about: Schema.Attribute.RichText;
     contact: Schema.Attribute.Component<'shared.contact', true>;
     copyright: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
@@ -742,7 +876,7 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
 export interface ApiHeaderHeader extends Struct.SingleTypeSchema {
   collectionName: 'headers';
   info: {
-    displayName: 'header';
+    displayName: 'Header';
     pluralName: 'headers';
     singularName: 'header';
   };
@@ -776,7 +910,7 @@ export interface ApiHeaderHeader extends Struct.SingleTypeSchema {
 export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
   collectionName: 'homepages';
   info: {
-    displayName: 'homepage';
+    displayName: 'Homepage';
     pluralName: 'homepages';
     singularName: 'homepage';
   };
@@ -811,7 +945,7 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
 export interface ApiInquiryInquiry extends Struct.CollectionTypeSchema {
   collectionName: 'inquiries';
   info: {
-    displayName: 'inquiry';
+    displayName: 'Inquiry';
     pluralName: 'inquiries';
     singularName: 'inquiry';
   };
@@ -852,7 +986,7 @@ export interface ApiInquiryInquiry extends Struct.CollectionTypeSchema {
 export interface ApiNewsletterNewsletter extends Struct.CollectionTypeSchema {
   collectionName: 'newsletters';
   info: {
-    displayName: 'newsletter';
+    displayName: 'Newsletter';
     pluralName: 'newsletters';
     singularName: 'newsletter';
   };
@@ -883,7 +1017,7 @@ export interface ApiNewsletterNewsletter extends Struct.CollectionTypeSchema {
 export interface ApiOfficeOffice extends Struct.CollectionTypeSchema {
   collectionName: 'offices';
   info: {
-    displayName: 'office';
+    displayName: 'Office';
     pluralName: 'offices';
     singularName: 'office';
   };
@@ -919,7 +1053,7 @@ export interface ApiOfficeOffice extends Struct.CollectionTypeSchema {
 export interface ApiPartnerPartner extends Struct.CollectionTypeSchema {
   collectionName: 'partners';
   info: {
-    displayName: 'partner';
+    displayName: 'Partner';
     pluralName: 'partners';
     singularName: 'partner';
   };
@@ -950,7 +1084,7 @@ export interface ApiPartnerPartner extends Struct.CollectionTypeSchema {
 export interface ApiRegionRegion extends Struct.CollectionTypeSchema {
   collectionName: 'regions';
   info: {
-    displayName: 'region';
+    displayName: 'Region';
     pluralName: 'regions';
     singularName: 'region';
   };
@@ -991,7 +1125,7 @@ export interface ApiRegionRegion extends Struct.CollectionTypeSchema {
 export interface ApiReviewReview extends Struct.CollectionTypeSchema {
   collectionName: 'reviews';
   info: {
-    displayName: 'review';
+    displayName: 'Review';
     pluralName: 'reviews';
     singularName: 'review';
   };
@@ -1020,7 +1154,7 @@ export interface ApiReviewReview extends Struct.CollectionTypeSchema {
         },
         number
       >;
-    review: Schema.Attribute.Text;
+    review: Schema.Attribute.RichText;
     reviewer_name: Schema.Attribute.String & Schema.Attribute.Required;
     source: Schema.Attribute.String;
     title: Schema.Attribute.String;
@@ -1035,7 +1169,7 @@ export interface ApiReviewReview extends Struct.CollectionTypeSchema {
 export interface ApiSiteSettingSiteSetting extends Struct.SingleTypeSchema {
   collectionName: 'site_settings';
   info: {
-    displayName: 'site-setting';
+    displayName: 'Site Setting';
     pluralName: 'site-settings';
     singularName: 'site-setting';
   };
@@ -1082,7 +1216,7 @@ export interface ApiSiteSettingSiteSetting extends Struct.SingleTypeSchema {
 export interface ApiStaticPageStaticPage extends Struct.CollectionTypeSchema {
   collectionName: 'static_pages';
   info: {
-    displayName: 'static-page';
+    displayName: 'Static Page';
     pluralName: 'static-pages';
     singularName: 'static-page';
   };
@@ -1114,7 +1248,7 @@ export interface ApiStaticPageStaticPage extends Struct.CollectionTypeSchema {
 export interface ApiTeamMemberTeamMember extends Struct.CollectionTypeSchema {
   collectionName: 'team_members';
   info: {
-    displayName: 'team-member';
+    displayName: 'Team Member';
     pluralName: 'team-members';
     singularName: 'team-member';
   };
@@ -1123,13 +1257,13 @@ export interface ApiTeamMemberTeamMember extends Struct.CollectionTypeSchema {
   };
   attributes: {
     active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    bio: Schema.Attribute.Text;
+    bio: Schema.Attribute.RichText;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.Blocks;
     display_order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
-    experience: Schema.Attribute.Text;
+    experience: Schema.Attribute.RichText;
     language: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -1153,7 +1287,7 @@ export interface ApiTeamMemberTeamMember extends Struct.CollectionTypeSchema {
 export interface ApiTripTrip extends Struct.CollectionTypeSchema {
   collectionName: 'trips';
   info: {
-    displayName: 'trip';
+    displayName: 'Trip';
     pluralName: 'trips';
     singularName: 'trip';
   };
@@ -1163,8 +1297,8 @@ export interface ApiTripTrip extends Struct.CollectionTypeSchema {
   attributes: {
     activity: Schema.Attribute.Relation<'manyToOne', 'api::activity.activity'>;
     best_season: Schema.Attribute.String;
-    cost_exclude: Schema.Attribute.Text;
-    cost_include: Schema.Attribute.Text;
+    cost_exclude: Schema.Attribute.RichText;
+    cost_include: Schema.Attribute.RichText;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1181,21 +1315,21 @@ export interface ApiTripTrip extends Struct.CollectionTypeSchema {
     duration_days: Schema.Attribute.Integer;
     duration_night: Schema.Attribute.Integer;
     end_point: Schema.Attribute.String;
-    equipment: Schema.Attribute.Text;
+    equipment: Schema.Attribute.RichText;
     faqs: Schema.Attribute.Relation<'oneToMany', 'api::faq.faq'>;
     featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     gallery: Schema.Attribute.Media<'images'>;
     group_size_max: Schema.Attribute.Integer;
     group_size_min: Schema.Attribute.Integer;
-    highlights: Schema.Attribute.Text;
-    itinerary: Schema.Attribute.Text;
+    highlights: Schema.Attribute.RichText;
+    itinerary: Schema.Attribute.RichText;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::trip.trip'> &
       Schema.Attribute.Private;
     max_altitude: Schema.Attribute.String;
-    overview: Schema.Attribute.Text;
+    overview: Schema.Attribute.RichText;
     pdf_brochure: Schema.Attribute.Media<'images' | 'files', true>;
-    permits: Schema.Attribute.Text;
+    permits: Schema.Attribute.RichText;
     price: Schema.Attribute.Decimal;
     publishedAt: Schema.Attribute.DateTime;
     region: Schema.Attribute.Relation<'manyToOne', 'api::region.region'>;
@@ -1217,7 +1351,7 @@ export interface ApiTripTrip extends Struct.CollectionTypeSchema {
 export interface ApiVideoReviewVideoReview extends Struct.CollectionTypeSchema {
   collectionName: 'video_reviews';
   info: {
-    displayName: 'video-review';
+    displayName: 'Video Review';
     pluralName: 'video-reviews';
     singularName: 'video-review';
   };
@@ -1763,6 +1897,8 @@ declare module '@strapi/strapi' {
       'api::activity.activity': ApiActivityActivity;
       'api::blog-catagory.blog-catagory': ApiBlogCatagoryBlogCatagory;
       'api::blog.blog': ApiBlogBlog;
+      'api::booking.booking': ApiBookingBooking;
+      'api::company.company': ApiCompanyCompany;
       'api::destination.destination': ApiDestinationDestination;
       'api::faq.faq': ApiFaqFaq;
       'api::fixed-departure.fixed-departure': ApiFixedDepartureFixedDeparture;

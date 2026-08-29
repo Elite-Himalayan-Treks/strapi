@@ -1,0 +1,38 @@
+{
+  "collectionName": "components_shared_company_documents",
+  "info": {
+    "displayName": "Company document",
+    "icon": "file"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": [
+        "Registration",
+        "License",
+        "Tax",
+        "Insurance",
+        "Certificate",
+        "Other"
+      ],
+      "default": "Other"
+    },
+    "description": {
+      "type": "text"
+    },
+    "issuedDate": {
+      "type": "date"
+    },
+    "file": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["files", "images"]
+    }
+  }
+}

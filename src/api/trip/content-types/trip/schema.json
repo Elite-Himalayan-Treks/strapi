@@ -4,7 +4,7 @@
   "info": {
     "singularName": "trip",
     "pluralName": "trips",
-    "displayName": "trip"
+    "displayName": "Trip"
   },
   "options": {
     "draftAndPublish": true
@@ -39,7 +39,7 @@
       "inversedBy": "trips"
     },
     "overview": {
-      "type": "text"
+      "type": "richtext"
     },
     "short_description": {
       "type": "text"
@@ -104,22 +104,22 @@
       "allowedTypes": ["images"]
     },
     "highlights": {
-      "type": "text"
+      "type": "richtext"
     },
     "itinerary": {
-      "type": "text"
+      "type": "richtext"
     },
     "cost_include": {
-      "type": "text"
+      "type": "richtext"
     },
     "cost_exclude": {
-      "type": "text"
+      "type": "richtext"
     },
     "permits": {
-      "type": "text"
+      "type": "richtext"
     },
     "equipment": {
-      "type": "text"
+      "type": "richtext"
     },
     "faqs": {
       "type": "relation",

@@ -4,7 +4,7 @@
   "info": {
     "singularName": "blog",
     "pluralName": "blogs",
-    "displayName": "blog"
+    "displayName": "Blog"
   },
   "options": {
     "draftAndPublish": true
@@ -35,7 +35,9 @@
     "featured_image": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "tags": {
       "type": "string"

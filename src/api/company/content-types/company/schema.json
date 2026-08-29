@@ -1,0 +1,37 @@
+{
+  "kind": "singleType",
+  "collectionName": "companies",
+  "info": {
+    "singularName": "company",
+    "pluralName": "companies",
+    "displayName": "Company",
+    "description": "About the company and official documents shown on the About Us page"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "About the company"
+    },
+    "aboutCompany": {
+      "type": "richtext"
+    },
+    "legalName": {
+      "type": "string"
+    },
+    "registrationNumber": {
+      "type": "string"
+    },
+    "licenseNumber": {
+      "type": "string"
+    },
+    "documents": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.company-document"
+    }
+  }
+}

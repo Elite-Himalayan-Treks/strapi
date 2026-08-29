@@ -4,7 +4,7 @@
   "info": {
     "singularName": "activity",
     "pluralName": "activities",
-    "displayName": "activity"
+    "displayName": "Activity"
   },
   "options": {
     "draftAndPublish": true
@@ -26,7 +26,7 @@
       "allowedTypes": ["images"]
     },
     "description": {
-      "type": "text"
+      "type": "richtext"
     },
     "display_order": {
       "type": "integer",

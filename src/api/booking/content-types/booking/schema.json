@@ -1,0 +1,159 @@
+{
+  "kind": "collectionType",
+  "collectionName": "bookings",
+  "info": {
+    "singularName": "booking",
+    "pluralName": "bookings",
+    "displayName": "Booking",
+    "description": "Trip booking orders with 2C2P payment"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "invoice_no": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "trip": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::trip.trip"
+    },
+    "departure": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::fixed-departure.fixed-departure"
+    },
+    "trip_title": {
+      "type": "string"
+    },
+    "start_date": {
+      "type": "date"
+    },
+    "end_date": {
+      "type": "date"
+    },
+    "customer_name": {
+      "type": "string",
+      "required": true
+    },
+    "customer_email": {
+      "type": "email",
+      "required": true
+    },
+    "customer_phone": {
+      "type": "string"
+    },
+    "customer_country": {
+      "type": "string"
+    },
+    "participants": {
+      "type": "integer",
+      "required": true,
+      "default": 1,
+      "min": 1
+    },
+    "unit_price": {
+      "type": "decimal",
+      "required": true
+    },
+    "discount_per_person": {
+      "type": "decimal",
+      "default": 0
+    },
+    "subtotal": {
+      "type": "decimal",
+      "required": true
+    },
+    "total_amount": {
+      "type": "decimal",
+      "required": true
+    },
+    "amount_due": {
+      "type": "decimal",
+      "required": true
+    },
+    "amount_paid": {
+      "type": "decimal",
+      "default": 0
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD",
+      "required": true
+    },
+    "payment_type": {
+      "type": "enumeration",
+      "enum": ["full", "deposit"],
+      "default": "full",
+      "required": true
+    },
+    "deposit_percent": {
+      "type": "decimal"
+    },
+    "booking_status": {
+      "type": "enumeration",
+      "enum": [
+        "pending_payment",
+        "paid",
+        "confirmed",
+        "cancelled",
+        "expired",
+        "failed",
+        "refunded"
+      ],
+      "default": "pending_payment",
+      "required": true
+    },
+    "payment_status": {
+      "type": "enumeration",
+      "enum": ["unpaid", "pending", "paid", "failed", "refunded"],
+      "default": "unpaid",
+      "required": true
+    },
+    "payment_provider": {
+      "type": "string",
+      "default": "2c2p"
+    },
+    "payment_token": {
+      "type": "text"
+    },
+    "tran_ref": {
+      "type": "string"
+    },
+    "reference_no": {
+      "type": "string"
+    },
+    "approval_code": {
+      "type": "string"
+    },
+    "payment_channel": {
+      "type": "string"
+    },
+    "paid_at": {
+      "type": "datetime"
+    },
+    "special_requests": {
+      "type": "text"
+    },
+    "admin_notes": {
+      "type": "text"
+    },
+    "frontend_return_url": {
+      "type": "string"
+    },
+    "source_page": {
+      "type": "string"
+    },
+    "seats_reserved": {
+      "type": "boolean",
+      "default": false
+    },
+    "payment_raw": {
+      "type": "json"
+    }
+  }
+}

@@ -4,7 +4,7 @@
   "info": {
     "singularName": "video-review",
     "pluralName": "video-reviews",
-    "displayName": "video-review"
+    "displayName": "Video Review"
   },
   "options": {
     "draftAndPublish": true
@@ -25,12 +25,16 @@
     "video": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["videos"]
+      "allowedTypes": [
+        "videos"
+      ]
     },
     "thumbnail": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "title": {
       "type": "string"
