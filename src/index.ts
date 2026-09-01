@@ -29,7 +29,13 @@ const CONTENT_MANAGER_FIXES: Record<string, CmSettingsPatch> = {
     mainField: 'invoice_no',
     defaultSortBy: 'invoice_no',
     defaultSortOrder: 'DESC',
-    nonSortableFields: ['trip', 'departure'],
+    nonSortableFields: ['trip', 'departure', 'payments'],
+  },
+  'api::payment.payment': {
+    mainField: 'gateway_invoice_no',
+    defaultSortBy: 'gateway_invoice_no',
+    defaultSortOrder: 'DESC',
+    nonSortableFields: ['booking'],
   },
   'api::newsletter.newsletter': {
     mainField: 'email',
@@ -101,6 +107,7 @@ async function ensureBookingPublicPermissions(strapi: Core.Strapi) {
     'api::booking.booking.checkout',
     'api::booking.booking.status',
     'api::booking.booking.confirmPayment',
+    'api::booking.booking.payBalance',
     'api::company.company.find',
   ];
 

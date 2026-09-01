@@ -644,7 +644,7 @@ export interface ApiBookingBooking extends Struct.CollectionTypeSchema {
       Schema.Attribute.DefaultTo<'2c2p'>;
     payment_raw: Schema.Attribute.JSON;
     payment_status: Schema.Attribute.Enumeration<
-      ['unpaid', 'pending', 'paid', 'failed', 'refunded']
+      ['unpaid', 'pending', 'partially_paid', 'paid', 'failed', 'refunded']
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'unpaid'>;
@@ -652,8 +652,10 @@ export interface ApiBookingBooking extends Struct.CollectionTypeSchema {
     payment_type: Schema.Attribute.Enumeration<['full', 'deposit']> &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'full'>;
+    payments: Schema.Attribute.Relation<'oneToMany', 'api::payment.payment'>;
     publishedAt: Schema.Attribute.DateTime;
     reference_no: Schema.Attribute.String;
+    remaining_balance: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
     seats_reserved: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
     source_page: Schema.Attribute.String;
@@ -1078,6 +1080,58 @@ export interface ApiPartnerPartner extends Struct.CollectionTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     website: Schema.Attribute.String;
+  };
+}
+
+export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
+  collectionName: 'payments';
+  info: {
+    description: 'Individual payment attempts against a booking (2C2P ledger)';
+    displayName: 'Payment';
+    pluralName: 'payments';
+    singularName: 'payment';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    amount: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    approval_code: Schema.Attribute.String;
+    booking: Schema.Attribute.Relation<'manyToOne', 'api::booking.booking'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    currency: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'USD'>;
+    gateway_invoice_no: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    kind: Schema.Attribute.Enumeration<
+      ['deposit', 'full', 'balance', 'manual']
+    > &
+      Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::payment.payment'
+    > &
+      Schema.Attribute.Private;
+    paid_at: Schema.Attribute.DateTime;
+    payment_channel: Schema.Attribute.String;
+    payment_provider: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'2c2p'>;
+    payment_raw: Schema.Attribute.JSON;
+    payment_token: Schema.Attribute.Text;
+    publishedAt: Schema.Attribute.DateTime;
+    reference_no: Schema.Attribute.String;
+    status: Schema.Attribute.Enumeration<['pending', 'succeeded', 'failed']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'pending'>;
+    tran_ref: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -1910,6 +1964,7 @@ declare module '@strapi/strapi' {
       'api::newsletter.newsletter': ApiNewsletterNewsletter;
       'api::office.office': ApiOfficeOffice;
       'api::partner.partner': ApiPartnerPartner;
+      'api::payment.payment': ApiPaymentPayment;
       'api::region.region': ApiRegionRegion;
       'api::review.review': ApiReviewReview;
       'api::site-setting.site-setting': ApiSiteSettingSiteSetting;

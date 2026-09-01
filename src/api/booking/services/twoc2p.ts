@@ -5,14 +5,19 @@
 
 import jwt from "jsonwebtoken";
 
+// 2C2P Payment Gateway configuration type decleration.
+// All fields are required for proper operation.
 export type Twoc2pConfig = {
   merchantId: string;
   secretKey: string;
   baseUrl: string;
   backendReturnUrl: string;
   defaultFrontendReturnUrl: string;
+  request3DS: "Y" | "N" | "F";
+  env: string;
 };
 
+// 2C2P Payment Token request type declaration.
 export type PaymentTokenRequest = {
   invoiceNo: string;
   description: string;
@@ -29,6 +34,8 @@ export type PaymentTokenRequest = {
   };
 };
 
+// 2C2P Payment Token result type declaration.
+// Payment Token is used to initiate a payment request and obtain a payment token for the transaction.
 export type PaymentTokenResult = {
   webPaymentUrl: string;
   paymentToken: string;
@@ -36,6 +43,8 @@ export type PaymentTokenResult = {
   respDesc: string;
 };
 
+// 2C2P Payment Inquiry result type declaration.
+// Payment Inquiry is used to check the status of a payment after it has been made.
 export type PaymentInquiryResult = Record<string, unknown> & {
   invoiceNo?: string;
   respCode?: string;
@@ -48,6 +57,17 @@ export type PaymentInquiryResult = Record<string, unknown> & {
   channelCode?: string;
   transactionDateTime?: string;
 };
+
+// Resolve the 3DS request setting based on environment and configuration.
+// so it is used for determining whether to request 3D Secure authentication for a payment transaction.
+function resolveRequest3DS(env: string): "Y" | "N" | "F" {
+  const raw = (process.env.TWOC2P_REQUEST_3DS || "").trim().toUpperCase();
+  if (raw === "Y" || raw === "N" || raw === "F") return raw;
+  return env === "production" ? "Y" : "N";
+}
+
+// Get the 2C2P configuration from environment variables.
+// also it provides default values for certain settings if they are not specified in the environment.
 
 function getConfig(): Twoc2pConfig {
   const merchantId = process.env.TWOC2P_MERCHANT_ID || "";
@@ -77,14 +97,20 @@ function getConfig(): Twoc2pConfig {
     defaultFrontendReturnUrl:
       process.env.TWOC2P_FRONTEND_RETURN_URL ||
       `${frontendUrl}/booking/payment-result`,
+    request3DS: resolveRequest3DS(env),
+    env,
   };
 }
 
+// Check if 2C2P is properly configured by verifying that both the merchant ID and secret key are present in the configuration.
 export function isTwoc2pConfigured(): boolean {
   const cfg = getConfig();
   return Boolean(cfg.merchantId && cfg.secretKey);
 }
 
+// Sign the given payload data using the provided secret key and return a JWT token.
+// it uses the HS256 algorithm for signing and does not include a timestamp in the token.
+// it generate the signed JWT token that can be sent to the 2C2P payment gateway for secure communication.
 export function signPayload(
   data: Record<string, unknown>,
   secretKey: string,
@@ -93,6 +119,9 @@ export function signPayload(
   return jwt.sign(data, secretKey, { algorithm: "HS256", noTimestamp: true });
 }
 
+// Decode the given JWT token using the provided secret key and return the decoded payload.
+// it uses the HS256 algorithm for verification and returns the decoded payload as a generic type T.
+// if the token is invalid or cannot be verified, it will throw an error.
 export function decodePayload<T = Record<string, unknown>>(
   token: string,
   secretKey: string,
@@ -136,6 +165,8 @@ export function decodeIncomingPayload(
   }
 }
 
+// Send a POST request to the specified 2C2P API endpoint with the given data, signing the payload with the merchant's secret key.
+
 async function postJwt(
   path: string,
   data: Record<string, unknown>,
@@ -169,6 +200,7 @@ async function postJwt(
   return raw;
 }
 
+// Request a payment token from the 2C2P API using the provided input data, which includes invoice number, description, amount, currency code, and optional user information. The function returns a promise that resolves to a PaymentTokenResult containing the web payment URL and payment token.
 export async function requestPaymentToken(
   input: PaymentTokenRequest,
 ): Promise<PaymentTokenResult> {
@@ -182,6 +214,7 @@ export async function requestPaymentToken(
     amount,
     currencyCode: input.currencyCode.toUpperCase(),
     locale: input.locale || "en",
+    request3DS: cfg.request3DS,
     frontendReturnUrl: input.frontendReturnUrl || cfg.defaultFrontendReturnUrl,
     backendReturnUrl: input.backendReturnUrl || cfg.backendReturnUrl,
   };
@@ -209,6 +242,7 @@ export async function requestPaymentToken(
   return decoded as PaymentTokenResult;
 }
 
+// Inquire the status of a payment using the provided invoice number. The function sends a request to the 2C2P API and returns a promise that resolves to a PaymentInquiryResult containing information about the payment status, such as response code, description, amount, currency code, and transaction reference.
 export async function inquirePayment(
   invoiceNo: string,
 ): Promise<PaymentInquiryResult> {
@@ -220,11 +254,13 @@ export async function inquirePayment(
   }) as Promise<PaymentInquiryResult>;
 }
 
+// Get the public configuration for 2C2P, including environment and feature flags.
 export function getTwoc2pPublicConfig() {
   const cfg = getConfig();
   return {
     configured: isTwoc2pConfigured(),
-    env: (process.env.TWOC2P_ENV || "sandbox").toLowerCase(),
+    env: cfg.env,
+    request3DS: cfg.request3DS,
     defaultFrontendReturnUrl: cfg.defaultFrontendReturnUrl,
     depositPercent: Number(process.env.BOOKING_DEPOSIT_PERCENT || 30),
   };

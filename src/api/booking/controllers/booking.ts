@@ -101,8 +101,12 @@ export default factories.createCoreController(
           return ctx.notFound('Booking not found');
         }
 
+        const settled = await strapi
+          .service('api::booking.booking')
+          .persistSettlement(booking);
+
         ctx.body = {
-          data: strapi.service('api::booking.booking').toPublicBooking(booking),
+          data: strapi.service('api::booking.booking').toPublicBooking(settled),
         };
       } catch (err) {
         httpError(ctx, err);
@@ -120,6 +124,8 @@ export default factories.createCoreController(
           unknown
         >;
 
+        let gatewayInvoiceNo: string | undefined;
+
         // Frontend may forward the JWT paymentResponse from 2C2P redirect
         if (body.paymentResponse || body.payload) {
           try {
@@ -127,11 +133,12 @@ export default factories.createCoreController(
               body as Record<string, unknown>,
             );
             if (decoded.invoiceNo) {
+              gatewayInvoiceNo = String(decoded.invoiceNo);
               // Frontend codes like 2000 mean "inquire for full info"
               if (decoded.respCode && decoded.respCode !== '2000') {
                 await strapi
                   .service('api::booking.booking')
-                  .applyPaymentResult(String(decoded.invoiceNo), decoded);
+                  .applyPaymentResult(gatewayInvoiceNo, decoded);
               }
             }
           } catch (e) {
@@ -156,7 +163,41 @@ export default factories.createCoreController(
 
         const result = await strapi
           .service('api::booking.booking')
-          .confirmFromFrontend(invoiceNo, email);
+          .confirmFromFrontend(invoiceNo, email, gatewayInvoiceNo);
+
+        ctx.body = { data: result };
+      } catch (err) {
+        httpError(ctx, err);
+      }
+    },
+
+    /**
+     * POST /api/bookings/pay-balance
+     * Start a 2C2P checkout for remaining balance on a deposit booking.
+     */
+    async payBalance(ctx) {
+      try {
+        const body = (ctx.request.body?.data ?? ctx.request.body ?? {}) as Record<
+          string,
+          unknown
+        >;
+        const invoiceNo = String(
+          body.invoiceNo || body.invoice_no || '',
+        ).trim();
+        const email = String(body.email || '').trim();
+
+        if (!invoiceNo || !email) {
+          return ctx.badRequest('invoiceNo and email are required');
+        }
+
+        const result = await strapi.service('api::booking.booking').payBalance({
+          invoiceNo,
+          email,
+          frontendReturnUrl: body.frontendReturnUrl
+            ? String(body.frontendReturnUrl)
+            : undefined,
+          locale: body.locale ? String(body.locale) : undefined,
+        });
 
         ctx.body = { data: result };
       } catch (err) {

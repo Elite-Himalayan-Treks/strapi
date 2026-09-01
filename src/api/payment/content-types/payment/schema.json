@@ -1,0 +1,72 @@
+{
+  "kind": "collectionType",
+  "collectionName": "payments",
+  "info": {
+    "singularName": "payment",
+    "pluralName": "payments",
+    "displayName": "Payment",
+    "description": "Individual payment attempts against a booking (2C2P ledger)"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "booking": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::booking.booking",
+      "inversedBy": "payments"
+    },
+    "kind": {
+      "type": "enumeration",
+      "enum": ["deposit", "full", "balance", "manual"],
+      "required": true
+    },
+    "amount": {
+      "type": "decimal",
+      "required": true
+    },
+    "currency": {
+      "type": "string",
+      "required": true,
+      "default": "USD"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["pending", "succeeded", "failed"],
+      "default": "pending",
+      "required": true
+    },
+    "gateway_invoice_no": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "payment_provider": {
+      "type": "string",
+      "default": "2c2p"
+    },
+    "payment_token": {
+      "type": "text"
+    },
+    "tran_ref": {
+      "type": "string"
+    },
+    "reference_no": {
+      "type": "string"
+    },
+    "approval_code": {
+      "type": "string"
+    },
+    "payment_channel": {
+      "type": "string"
+    },
+    "paid_at": {
+      "type": "datetime"
+    },
+    "payment_raw": {
+      "type": "json"
+    }
+  }
+}

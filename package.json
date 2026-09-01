@@ -13,6 +13,7 @@
     "seed:testdata": "node ./scripts/seed-testdata.js",
     "start": "strapi start",
     "strapi": "strapi",
+    "test": "node --experimental-strip-types --test src/api/booking/services/money.test.ts",
     "upgrade": "npx @strapi/upgrade latest",
     "upgrade:dry": "npx @strapi/upgrade latest --dry"
   },

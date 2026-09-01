@@ -80,6 +80,16 @@
       "type": "decimal",
       "default": 0
     },
+    "remaining_balance": {
+      "type": "decimal",
+      "default": 0
+    },
+    "payments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::payment.payment",
+      "mappedBy": "booking"
+    },
     "currency": {
       "type": "string",
       "default": "USD",
@@ -110,7 +120,14 @@
     },
     "payment_status": {
       "type": "enumeration",
-      "enum": ["unpaid", "pending", "paid", "failed", "refunded"],
+      "enum": [
+        "unpaid",
+        "pending",
+        "partially_paid",
+        "paid",
+        "failed",
+        "refunded"
+      ],
       "default": "unpaid",
       "required": true
     },

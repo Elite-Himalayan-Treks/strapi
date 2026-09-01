@@ -43,6 +43,15 @@ export default {
     },
     {
       method: 'POST',
+      path: '/bookings/pay-balance',
+      handler: 'booking.payBalance',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
+    {
+      method: 'POST',
       path: '/bookings/payment/callback',
       handler: 'booking.paymentCallback',
       config: {

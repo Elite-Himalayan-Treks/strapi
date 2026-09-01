@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="160" viewBox="0 0 640 160">
+  <rect width="640" height="160" rx="12" fill="#1e3a5f"/>
+  <polygon points="40,120 90,40 140,120" fill="#e8c547"/>
+  <polygon points="90,70 120,120 60,120" fill="#1e3a5f"/>
+  <text x="170" y="95" fill="#ffffff" font-size="52" font-family="Georgia, serif">Nepal Trails</text>
+</svg>

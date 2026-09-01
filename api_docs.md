@@ -11,7 +11,7 @@ Payment provider: **2C2P Payment Gateway v4.3** (hosted checkout via Payment Tok
 ```
 1. Customer picks trip (+ optional fixed departure) and fills checkout form
 2. Frontend POST /bookings/checkout
-3. Backend creates Booking (pending_payment) and requests 2C2P paymentToken
+3. Backend creates Booking (pending_payment) + a Payment ledger row, then requests 2C2P paymentToken
 4. Frontend redirects browser to data.payment.webPaymentUrl
 5. Customer pays on 2C2P hosted page
 6. 2C2P:
@@ -30,7 +30,7 @@ Payment provider: **2C2P Payment Gateway v4.3** (hosted checkout via Payment Tok
 | Rule | Value |
 | ---- | ----- |
 | Price source | Fixed departure `price` / `discount` if departure selected; else trip `price` / `discount_price` |
-| Amount charged | `full` = subtotal; `deposit` = subtotal × `BOOKING_DEPOSIT_PERCENT` (default **30%**) |
+| Amount charged | `full` = subtotal; `deposit` = subtotal × `BOOKING_DEPOSIT_PERCENT` (default **30%**). Remaining balance is `total_amount - amount_paid` and can be collected via `/bookings/pay-balance` |
 | Currency | From trip `currency` (e.g. `USD`, `NPR`) — must be enabled on your 2C2P merchant account |
 | Seat check | Soft check at checkout; seats increment only after **successful payment** |
 | Invoice format | `BK` + `YYYYMMDD` + random, e.g. `BK20260827A1B2C3` |
@@ -39,8 +39,9 @@ Payment provider: **2C2P Payment Gateway v4.3** (hosted checkout via Payment Tok
 
 Statuses:
 
-- `booking_status`: `pending_payment` → `confirmed` (paid) | `failed` | `cancelled` | `expired` | `refunded`
-- `payment_status`: `unpaid` → `pending` → `paid` | `failed` | `refunded`
+- `booking_status`: `pending_payment` → `confirmed` (deposit or full received; seats reserved) | `failed` | `cancelled` | `expired` | `refunded`
+- `payment_status`: `unpaid` → `pending` → `partially_paid` (deposit received, remaining > 0) → `paid` (remaining = 0) | `failed` | `refunded`
+- Money: `total_amount` is the trip total; `amount_paid` is the sum of succeeded payments; `remaining_balance` / `amount_due` is outstanding. Each 2C2P charge is a Payment row with its own `gateway_invoice_no`.
 
 ---
 
@@ -150,6 +151,7 @@ Aliases accepted: `trip` / `departure` instead of `*DocumentId`.
       "total_amount": 2798,
       "amount_due": 2798,
       "amount_paid": 0,
+      "remaining_balance": 2798,
       "currency": "USD",
       "payment_type": "full",
       "deposit_percent": null,
@@ -241,9 +243,10 @@ UI mapping:
 
 | `booking.payment_status` | `booking.booking_status` | UI |
 | ------------------------ | ------------------------ | --- |
-| `paid` | `confirmed` | Success — show invoice, trip, dates, amount paid |
+| `paid` (remaining 0) | `confirmed` | Fully paid — show invoice, trip, dates, amount paid |
+| `partially_paid` (remaining > 0) | `confirmed` | Deposit received — show amount paid **and remaining balance**; offer pay remaining |
 | `pending` | `pending_payment` | “Payment processing…” — poll status every 3–5s |
-| `failed` | `failed` | Failure — offer retry / contact |
+| `failed` | `failed` | Failure — offer retry / contact (a failed **balance** payment does not un-confirm a deposit) |
 | other | other | Generic pending / contact support |
 
 ### Poll status (alternative / while pending)
@@ -274,11 +277,12 @@ Both `invoiceNo` and `email` are required (lookup key so invoices are not public
 POST /api/bookings/payment/callback
 ```
 
-Called by 2C2P server-to-server. Auth disabled. On `respCode=0000` the backend:
+Called by 2C2P server-to-server. Auth disabled. Looks up the **Payment** by `gateway_invoice_no` (falls back to booking `invoice_no`). On `respCode=0000`:
 
-1. Marks booking `payment_status=paid`, `booking_status=confirmed`
-2. Sets `amount_paid`, `paid_at`, `tran_ref`, etc.
-3. Increments fixed-departure `booked_seats` (once, idempotent)
+1. Marks that payment `succeeded` (idempotent per payment)
+2. Recalculates `amount_paid`, `remaining_balance`, `amount_due`
+3. Sets `payment_status` to `paid` or `partially_paid`, `booking_status=confirmed`
+4. Increments fixed-departure `booked_seats` (once, idempotent)
 
 Ensure this URL is publicly reachable in non-local environments (`TWOC2P_BACKEND_RETURN_URL`).
 
@@ -293,9 +297,29 @@ Ensure this URL is publicly reachable in non-local environments (`TWOC2P_BACKEND
 **Deposit 30%** — same booking, `paymentType: "deposit"`:
 
 - `total_amount` = `2798` (full trip value)
-- `amount_due` = `839.4` (charged now)
-- `deposit_percent` = `30`
-- Remaining balance is offline / later (not auto-collected in this phase)
+- First Payment `amount` = `839.4` (charged now)
+- After deposit succeeds: `amount_paid` = `839.4`, `remaining_balance` / `amount_due` = `1958.6`, `payment_status` = `partially_paid`
+- Collect the rest with `POST /api/bookings/pay-balance` (new 2C2P invoice `{invoice_no}B2`)
+
+---
+
+## 5b. Pay remaining balance
+
+```http
+POST /api/bookings/pay-balance
+Content-Type: application/json
+```
+
+```json
+{
+  "invoiceNo": "BK20260827A1B2C3",
+  "email": "ada@example.com",
+  "frontendReturnUrl": "http://localhost:3000/booking/payment-result",
+  "locale": "en"
+}
+```
+
+Allowed only when `remaining_balance > 0` and `booking_status` is `confirmed`. Creates a new Payment (`kind: balance`) with a unique 2C2P invoice (`{invoice_no}B2`, `B3`, …) and returns the same `{ booking, payment }` shape as checkout. Persist the **booking** `invoice_no` in sessionStorage (not the gateway invoice).
 
 ---
 
@@ -405,8 +429,11 @@ Public permissions (auto-granted on Strapi bootstrap):
 - `booking.checkout`
 - `booking.status`
 - `booking.confirmPayment`
+- `booking.payBalance`
 
 `config` and `payment/callback` are `auth: false`.
+
+Payments appear under **Content Manager → Payment**. Do not expose Payment CRUD publicly.
 
 ---
 
@@ -424,6 +451,10 @@ Public permissions (auto-granted on Strapi bootstrap):
 1. Set sandbox `TWOC2P_*` credentials and restart Strapi
 2. `GET /api/bookings/config` → `configured: true`
 3. `POST /api/bookings/checkout` with a real trip `documentId`
-4. Open `webPaymentUrl`, complete sandbox payment
+4. Open `webPaymentUrl`, complete sandbox payment with:
+   - Visa `4111111111111111`
+   - CVV `123`
+   - Any future expiry
+   Sandbox sets `request3DS: N` by default so Demo Merchant SG does not fail with **4081**. Real cards and OTP challenges are not used here. After a failed invoice, retry issues a new 2C2P invoice (`…B2`). Override with `TWOC2P_REQUEST_3DS=Y` if you need to test 3DS (`OTP 123456`).
 5. `GET /api/bookings/status?invoiceNo=…&email=…` → `payment_status: paid`
 6. Confirm departure `booked_seats` increased in Admin

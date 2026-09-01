@@ -302,7 +302,7 @@ async function seed(strapi) {
     partner: ['find', 'findOne'],
     inquiry: ['create'],
     newsletter: ['create'],
-    booking: ['checkout', 'status', 'confirmPayment'],
+    booking: ['checkout', 'status', 'confirmPayment', 'payBalance'],
     about: ['find'],
     global: ['find'],
     company: ['find'],
@@ -311,6 +311,7 @@ async function seed(strapi) {
   if (process.env.SKIP_WIPE !== '1') {
     console.log('Clearing existing content…');
     const uids = [
+      'api::payment.payment',
       'api::booking.booking',
       'api::inquiry.inquiry',
       'api::newsletter.newsletter',
