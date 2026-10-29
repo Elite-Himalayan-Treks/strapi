@@ -14,7 +14,8 @@
     "trip": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::trip.trip"
+      "target": "api::trip.trip",
+      "inversedBy": "video_reviews"
     },
     "reviewer_name": {
       "type": "string"
@@ -28,6 +29,16 @@
       "allowedTypes": [
         "videos"
       ]
+    },
+    "youtube_url": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
     },
     "thumbnail": {
       "type": "media",

@@ -14,6 +14,32 @@
     "hero": {
       "type": "text"
     },
+    "hero_eyebrow": {
+      "type": "string"
+    },
+    "hero_title": {
+      "type": "string"
+    },
+    "hero_highlight": {
+      "type": "string"
+    },
+    "hero_background": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "primary_cta_label": {
+      "type": "string"
+    },
+    "primary_cta_url": {
+      "type": "string"
+    },
+    "secondary_cta_label": {
+      "type": "string"
+    },
+    "secondary_cta_url": {
+      "type": "string"
+    },
     "featured_trips": {
       "type": "text"
     },

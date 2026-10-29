@@ -18,6 +18,11 @@
         "images"
       ]
     },
+    "mega_menu_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
     "top_bar": {
       "type": "component",
       "component": "shared.top-bar",

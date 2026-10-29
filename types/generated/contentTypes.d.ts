@@ -896,6 +896,7 @@ export interface ApiHeaderHeader extends Struct.SingleTypeSchema {
     > &
       Schema.Attribute.Private;
     logo: Schema.Attribute.Media<'images'>;
+    mega_menu_image: Schema.Attribute.Media<'images'>;
     navigation: Schema.Attribute.Component<'shared.navigation', true>;
     plan_trip_button: Schema.Attribute.Component<'shared.button', false>;
     publishedAt: Schema.Attribute.DateTime;
@@ -930,13 +931,21 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
     featured_reviews: Schema.Attribute.Text;
     featured_trips: Schema.Attribute.Text;
     hero: Schema.Attribute.Text;
+    hero_background: Schema.Attribute.Media<'images'>;
+    hero_eyebrow: Schema.Attribute.String;
+    hero_highlight: Schema.Attribute.String;
+    hero_title: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::homepage.homepage'
     > &
       Schema.Attribute.Private;
+    primary_cta_label: Schema.Attribute.String;
+    primary_cta_url: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    secondary_cta_label: Schema.Attribute.String;
+    secondary_cta_url: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1362,6 +1371,7 @@ export interface ApiTripTrip extends Struct.CollectionTypeSchema {
       'api::fixed-departure.fixed-departure'
     >;
     destination: Schema.Attribute.String;
+    detail_gallery: Schema.Attribute.Media<'images', true>;
     difficulty: Schema.Attribute.Enumeration<
       ['easy', 'moderate', 'strenuous', 'challenging', 'extreme']
     >;
@@ -1398,6 +1408,10 @@ export interface ApiTripTrip extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    video_reviews: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::video-review.video-review'
+    >;
     view_count: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
   };
 }
@@ -1417,7 +1431,9 @@ export interface ApiVideoReviewVideoReview extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
     display_order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1433,6 +1449,7 @@ export interface ApiVideoReviewVideoReview extends Struct.CollectionTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     video: Schema.Attribute.Media<'videos'>;
+    youtube_url: Schema.Attribute.String;
   };
 }
 

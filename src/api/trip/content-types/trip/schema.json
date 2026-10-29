@@ -103,6 +103,11 @@
       "multiple": false,
       "allowedTypes": ["images"]
     },
+    "detail_gallery": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": ["images"]
+    },
     "highlights": {
       "type": "richtext"
     },
@@ -131,6 +136,12 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::review.review",
+      "mappedBy": "trip"
+    },
+    "video_reviews": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::video-review.video-review",
       "mappedBy": "trip"
     },
     "departures": {
